@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+sqlmodel
+boto3
+# Database Driver (Choose one based on your DB)
+psycopg2-binary # For PostgreSQL
+pytest
+pytest-asyncio
+pytest-mock
+httpx
+alembic
+python-dotenv
+black
+authlib
+itsdangerous
