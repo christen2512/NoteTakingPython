@@ -1,12 +1,16 @@
 import os
+import sys
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 from backend.config import settings
 from backend.routers.auth_router import auth_router
+from backend.routers.page_router import page_router
 from dotenv import load_dotenv
 import uvicorn
+from sqlmodel import create_engine
+
 
 app = FastAPI()
 
@@ -26,7 +30,7 @@ app.add_middleware(
 )
 app.add_middleware(
     SessionMiddleware,
-    secret_key=os.getenv("APP_SECRET_KEY"),  # type: ignore
+    secret_key=settings.APP_SECRET_KEY,  # type: ignore
     same_site="lax",
     https_only=False,
     max_age=3600,
@@ -35,10 +39,13 @@ app.add_middleware(
 load_dotenv()
 
 app.include_router(auth_router)
+app.include_router(page_router)
+
 
 @app.get("/")
 async def home():
     return RedirectResponse("/login")
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -24,10 +24,16 @@ body,
 #app {
   height: 100%;
   background-color: var(--tt-bg-color);
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+  &::-webkit-scrollbar {     /* WebKit browsers */
+    display: none;
+  }
 }
 
 body {
-  overflow: hidden;
+  overflow: auto;
+  
 }
 
 .tiptap.ProseMirror {

@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Plus, Search, Settings } from "lucide-react"
+import { Calendar, Home, Inbox, Plus, Search, Settings, FileText } from "lucide-react"
 
 import {
   Sidebar,
@@ -11,7 +11,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { usePages } from "@/hooks/usePages";
 
 // Menu items.
 const items = [
@@ -44,9 +45,28 @@ const items = [
 
 export default function AppSidebar() {
   const navigate = useNavigate();
+  const { pages, isLoading } = usePages();
+
   return (
     <Sidebar>
       <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Navigate</SidebarGroupLabel>          
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {items.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <Link to={item.url}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupLabel>Pages</SidebarGroupLabel>
           <SidebarGroupAction className="w-2 h-5" onClick={() => navigate("/new-page")}>
@@ -54,16 +74,31 @@ export default function AppSidebar() {
         </SidebarGroupAction>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
+              {isLoading && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton disabled>
+                    <span>Loading pages...</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-              ))}
+              )}
+              {!isLoading && pages.length === 0 && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton disabled>
+                    <span>No pages yet.</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
+              {!isLoading &&
+                pages.map((page) => (
+                  <SidebarMenuItem key={page.id}>
+                    <SidebarMenuButton asChild>
+                      <Link to={`/page/${page.id}`}>
+                        <FileText className="w-4 h-4 mr-2" />
+                        <span>Page {page.id}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

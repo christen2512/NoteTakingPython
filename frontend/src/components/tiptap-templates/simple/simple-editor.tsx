@@ -1,5 +1,5 @@
 import * as React from "react"
-import { EditorContent, EditorContext, useEditor } from "@tiptap/react"
+import { EditorContent, EditorContext, useEditor, JSONContent } from "@tiptap/react"
 
 // --- Tiptap Core Extensions ---
 import { StarterKit } from "@tiptap/starter-kit"
@@ -71,7 +71,20 @@ import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils"
 // --- Styles ---
 import "@/components/tiptap-templates/simple/simple-editor.scss"
 
-import content from "@/components/tiptap-templates/simple/data/content.json"
+import defaultStaticContentFile from "@/components/tiptap-templates/simple/data/content.json"
+import { useAutoSave } from "@/hooks/useAutoSave"
+
+// Define an empty document structure for new or unloaded pages
+const emptyDocument: JSONContent = { type: "doc", content: [{ type: "paragraph" }] }
+
+interface SimpleEditorProps {
+  saveFunction: (
+    docId: string | null | undefined,
+    content: string
+  ) => Promise<string | void>
+  initialContent?: JSONContent | string
+  documentId?: string | null | undefined
+}
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -165,13 +178,15 @@ const MobileToolbarContent = ({
       </Button>
     </ToolbarGroup>
 
-    <ToolbarSeparator />
-
     {type === "highlighter" ? <HighlightContent /> : <LinkContent />}
   </>
 )
 
-export function SimpleEditor() {
+export function SimpleEditor({ 
+  saveFunction, 
+  initialContent, 
+  documentId 
+}: SimpleEditorProps) {
   const isMobile = useMobile()
   const windowSize = useWindowSize()
   const [mobileView, setMobileView] = React.useState<
@@ -238,8 +253,27 @@ export function SimpleEditor() {
       TrailingNode,
       Link.configure({ openOnClick: false }),
     ],
-    content: content,
+    content: initialContent 
+      ? (typeof initialContent === 'string' ? JSON.parse(initialContent) : initialContent) 
+      : emptyDocument,
   })
+
+  React.useEffect(() => {
+    if (editor && initialContent && editor.isEditable) {
+      const newContent = initialContent;
+      if (JSON.stringify(editor.getJSON()) !== JSON.stringify(newContent)) {
+        editor.commands.setContent(newContent, false);
+      }
+    }
+  }, [initialContent, editor])
+
+  const save = useAutoSave(
+    editor,
+    documentId,
+    saveFunction,
+    1000
+  )
+  
 
   React.useEffect(() => {
     const checkCursorVisibility = () => {
@@ -258,7 +292,6 @@ export function SimpleEditor() {
           const isEnoughSpace =
             windowSize.height - cursorCoords.top - toolbarHeight > 0
 
-          // If not enough space, scroll until the cursor is the middle of the screen
           if (!isEnoughSpace) {
             const scrollY =
               cursorCoords.top - windowSize.height / 2 + toolbarHeight

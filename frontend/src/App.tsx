@@ -5,6 +5,8 @@ import Home from './pages/home'
 import { SidebarProvider } from './components/ui/sidebar'
 import DefaultLayout from './components/default-layout'
 import NewPage from './pages/new-page'
+import ViewEditPage from './pages/ViewEditPage'
+
 function App() {
 
   return (
@@ -14,6 +16,7 @@ function App() {
           <Route path="/" element={<LoginForm />} />
           <Route path="/home" element={<Home />} />
           <Route path="/new-page" element={<NewPage />} />
+          <Route path="/page/:id" element={<ViewEditPage />} />
         </Routes>
       </DefaultLayout>
     </SidebarProvider>

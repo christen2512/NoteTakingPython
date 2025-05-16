@@ -51,7 +51,7 @@ Use Dependency Injection for DB sessions, user auth, services.
 
 SQLModel is the default ORM. Use it for DB and request/response schemas.
 
-Use type hints (| None instead of Optional).
+Use type hints and NEVER use Optional, use the pipe '|' operator instead.
 
 Keep models, services, and routers in logical folders.
 

@@ -68,4 +68,45 @@ This document provides detailed technical specifications, established patterns, 
 * **CRUD Operations:** Implement Create, Read, Update, and Delete (CRUD) operations using SQLModel's session methods. Encapsulate these operations within service layers.
 * **Database Migrations (Alembic):** Use Alembic to manage database schema changes. Ensure that SQLModel model changes are reflected in Alembic migration scripts.
 
+## Backend Architecture (FastAPI)
+
+### Model Structure (SQLModel & Pydantic)
+
+We employ a clear separation between database models and API data schemas:
+
+1.  **Database Models (`backend/models/`)**:
+    *   Defined using `SQLModel` with `table=True`.
+    *   These classes directly map to database tables (e.g., `Page`).
+    *   They represent the canonical structure of data as stored in the database.
+    *   **Page Content Storage**: For entities like `Page` that represent rich-text documents (e.g., from Tiptap), the entire content structure is stored within a single database column using a suitable JSON type (e.g., `JSONB` for PostgreSQL). This simplifies the model structure significantly compared to normalizing nodes into separate tables.
+        *   Example: `content: Any = Field(default={}, sa_column=Column(JSONB))`
+
+2.  **API Schemas (`backend/schemas/`)**:
+    *   Defined using `pydantic.BaseModel`.
+    *   These classes define the structure of data for API requests and responses (e.g., `PageCreate`, `PageRead`, `PageUpdate`).
+    *   **Page Content Validation**: For JSON content fields, the schemas use flexible types like `Any` or `Dict[str, Any] | List[Any]` to validate that the input/output is valid JSON, matching the expected editor structure.
+    *   **Why this separation?**
+        *   Decoupling, Security, Clarity, Flexibility (as before).
+    *   `Config.from_attributes = True` is used in `Read` schemas to enable serialization from `SQLModel` database objects, including automatic deserialization of the JSON content field.
+
+### Dependency Injection
+
+FastAPI's dependency injection system is used for:
+
+*   Database sessions (`get_session`)
+*   Authentication (`get_current_user` - placeholder)
+*   Service layer access (when implemented)
+
+This promotes testability and modularity.
+
+*(... Other sections like Routing, Services, Database can be added here ...)*
+
+## Frontend Architecture (React)
+
+*(... Details about React structure ...)*
+
+## Testing Strategy
+
+*(... Details about Pytest, Vitest ...)*
+
 By adhering to these guidelines, we aim to create a maintainable, scalable, and high-quality application.
