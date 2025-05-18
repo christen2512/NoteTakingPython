@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Plus, Search, Settings, FileText } from "lucide-react"
+import { Calendar, Home, Inbox, Plus, Search, Settings, FileText, Minus } from "lucide-react"
 
 import {
   Sidebar,
@@ -10,9 +10,10 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuAction,
 } from "@/components/ui/sidebar"
 import { Link, useNavigate } from "react-router-dom";
-import { usePages } from "@/hooks/usePages";
+import { usePagesContext } from "@/contexts/PagesContext"; // Added
 
 // Menu items.
 const items = [
@@ -43,9 +44,14 @@ const items = [
   },
 ]
 
+
 export default function AppSidebar() {
   const navigate = useNavigate();
-  const { pages, isLoading } = usePages();
+  const { 
+    pages, 
+    isLoadingPages, 
+    handleDeletePage,
+  } = usePagesContext(); // Changed to usePagesContext
 
   return (
     <Sidebar>
@@ -69,26 +75,28 @@ export default function AppSidebar() {
         </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupLabel>Pages</SidebarGroupLabel>
-          <SidebarGroupAction className="w-2 h-5" onClick={() => navigate("/new-page")}>
+          <SidebarGroupAction className="w-2 h-5" onClick={() => {
+            navigate("/new-page");
+          }}>
             <Plus />
         </SidebarGroupAction>
           <SidebarGroupContent>
             <SidebarMenu>
-              {isLoading && (
+              {isLoadingPages && (
                 <SidebarMenuItem>
                   <SidebarMenuButton disabled>
                     <span>Loading pages...</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )}
-              {!isLoading && pages.length === 0 && (
+              {!isLoadingPages && pages.length === 0 && (
                 <SidebarMenuItem>
                   <SidebarMenuButton disabled>
                     <span>No pages yet.</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )}
-              {!isLoading &&
+              {!isLoadingPages &&
                 pages.map((page) => (
                   <SidebarMenuItem key={page.id}>
                     <SidebarMenuButton asChild>
@@ -97,6 +105,18 @@ export default function AppSidebar() {
                         <span>Page {page.id}</span>
                       </Link>
                     </SidebarMenuButton>
+                    <SidebarMenuAction onClick={async () => {
+                      try {
+                        await handleDeletePage(page.id);
+                        navigate("/home");
+                      } catch (error) {
+                        // Error is already handled by toast in handleDeletePage in the context
+                        // Additional UI-specific error handling could go here if needed
+                        console.error(`UI: Error after attempting to delete page ${page.id} directly in AppSidebar:`, error);
+                      }
+                    }}>
+                      <Minus className="w-4 h-4" />
+                    </SidebarMenuAction>
                   </SidebarMenuItem>
                 ))}
             </SidebarMenu>

@@ -46,3 +46,12 @@ async def update_page(
     session.commit()
     session.refresh(db_page)
     return db_page
+
+@page_router.delete("/{page_id}", status_code=204)
+async def delete_page(page_id: int, session: Session = Depends(get_db)):
+    page = session.get(Page, page_id)
+    if not page:
+        raise HTTPException(status_code=404, detail="Page not found")
+    session.delete(page)
+    session.commit()
+    return {"message": "Page deleted successfully"}

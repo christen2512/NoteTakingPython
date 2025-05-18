@@ -1,3 +1,4 @@
+import { Toaster } from "sonner";
 import AppSidebar from "./app-sidebar";
 import { ThemeToggle } from "./tiptap-templates/simple/theme-toggle";
 import { SidebarTrigger } from "./ui/sidebar";
@@ -11,6 +12,7 @@ export default function DefaultLayout({ children }: { children: React.ReactNode 
             <div className="flex flex-col w-full mx-auto">
                 <SidebarTrigger />
                 {children}
+                <Toaster />
             </div>
         </div>
     )

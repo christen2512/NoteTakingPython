@@ -55,7 +55,6 @@ export default function ViewEditPage() {
       const updatedPage = await updateExistingPage(pageId, editorContent);
       if (updatedPage && updatedPage.id) {
         console.log("Page updated successfully:", updatedPage);
-        setInitialContent(updatedPage.content); // Refresh editor with saved content
         return updatedPage.id.toString(); // Return page ID as string
       } else {
         console.warn("Page update did not return a page or page ID.");

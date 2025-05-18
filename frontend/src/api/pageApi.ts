@@ -68,3 +68,13 @@ export const getPageById = (pageId: number): Promise<Page | null> => {
       }
     });
 }; 
+
+export const deletePage = (pageId: number): Promise<void> => {
+  return axios.delete(`${API_BASE_URL}/${pageId}`)
+    .then(() => {
+      console.log(`Page ${pageId} deleted successfully`);
+    })
+    .catch(error => {
+      console.error(`Error deleting page ${pageId}:`, error);
+    });
+}
