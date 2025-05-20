@@ -1,5 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
-import axios from 'axios';
+import React, { createContext, useContext, useCallback, ReactNode } from 'react';
 import { Page } from '@/types/page';
 import { usePages as useOriginalPagesHook } from '@/hooks/usePages'; // Renaming to avoid conflict
 import { deletePage as deletePageApi } from "@/api/pageApi";

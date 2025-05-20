@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 import { getPageById, updateExistingPage } from '@/api/pageApi';
-import { Page } from '@/types/page'; // Your Page type
 
 export default function ViewEditPage() {
   const { id } = useParams<{ id: string }>();

@@ -1,6 +1,5 @@
 import { Toaster } from "sonner";
 import AppSidebar from "./app-sidebar";
-import { ThemeToggle } from "./tiptap-templates/simple/theme-toggle";
 import { SidebarTrigger } from "./ui/sidebar";
 
 export default function DefaultLayout({ children }: { children: React.ReactNode }) {

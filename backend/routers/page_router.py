@@ -40,6 +40,7 @@ async def update_page(
     if not db_page:
         raise HTTPException(status_code=404, detail="Page not found")
 
+    print(page_update.content)
     if page_update.content is not None:
         db_page.content = page_update.content
 

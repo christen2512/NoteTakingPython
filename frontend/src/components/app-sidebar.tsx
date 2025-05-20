@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Plus, Search, Settings, FileText, Minus } from "lucide-react"
+import { Calendar, Home, Inbox, Plus, Search, Settings, FileText, Minus, Pencil } from "lucide-react"
 
 import {
   Sidebar,
@@ -115,7 +115,7 @@ export default function AppSidebar() {
                         console.error(`UI: Error after attempting to delete page ${page.id} directly in AppSidebar:`, error);
                       }
                     }}>
-                      <Minus className="w-4 h-4" />
+                      <Minus className="w-2 h-2" />
                     </SidebarMenuAction>
                   </SidebarMenuItem>
                 ))}

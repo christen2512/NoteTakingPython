@@ -52,6 +52,7 @@ import {
 import { MarkButton } from "@/components/tiptap-ui/mark-button"
 import { TextAlignButton } from "@/components/tiptap-ui/text-align-button"
 import { UndoRedoButton } from "@/components/tiptap-ui/undo-redo-button"
+import GlobalDragHandle  from "tiptap-extension-global-drag-handle"
 
 // --- Icons ---
 import { ArrowLeftIcon } from "@/components/tiptap-icons/arrow-left-icon"
@@ -62,17 +63,11 @@ import { LinkIcon } from "@/components/tiptap-icons/link-icon"
 import { useMobile } from "@/hooks/use-mobile"
 import { useWindowSize } from "@/hooks/use-window-size"
 
-// --- Components ---
-import { ThemeToggle } from "@/components/tiptap-templates/simple/theme-toggle"
-
 // --- Lib ---
 import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils"
 
 // --- Styles ---
 import "@/components/tiptap-templates/simple/simple-editor.scss"
-
-import defaultStaticContentFile from "@/components/tiptap-templates/simple/data/content.json"
-import { useAutoSave } from "@/hooks/useAutoSave"
 
 // Define an empty document structure for new or unloaded pages
 const emptyDocument: JSONContent = { type: "doc", content: [{ type: "paragraph" }] }
@@ -252,6 +247,7 @@ export function SimpleEditor({
       }),
       TrailingNode,
       Link.configure({ openOnClick: false }),
+      GlobalDragHandle,
     ],
     content: initialContent 
       ? (typeof initialContent === 'string' ? JSON.parse(initialContent) : initialContent) 
@@ -266,14 +262,6 @@ export function SimpleEditor({
       }
     }
   }, [initialContent, editor])
-
-  const save = useAutoSave(
-    editor,
-    documentId,
-    saveFunction,
-    1000
-  )
-  
 
   React.useEffect(() => {
     const checkCursorVisibility = () => {
